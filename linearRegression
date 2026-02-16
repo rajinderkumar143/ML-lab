@@ -1,0 +1,39 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_diabetes
+from sklearn.metrics import r2_score, mean_squared_error
+
+# Load dataset
+data = load_diabetes()
+
+# Use only one feature (e.g., BMI column index 2)
+X = data.data[:, 2]
+y = data.target
+
+# Reshape X to 2D
+X = X.reshape(-1, 1)
+
+# Add bias column
+ones = np.ones((X.shape[0], 1))
+X_b = np.hstack((ones, X))
+
+# Normal Equation
+theta = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(y)
+
+print("Intercept (θ0):", theta[0])
+print("Coefficient (θ1):", theta[1])
+
+# Predictions
+y_pred = X_b.dot(theta)
+
+# Evaluation
+print("R2 Score:", r2_score(y, y_pred))
+print("MSE:", mean_squared_error(y, y_pred))
+
+# Visualization
+plt.scatter(X, y, alpha=0.5)
+plt.plot(X, y_pred, color='red')
+plt.xlabel("BMI Feature")
+plt.ylabel("Disease Progression")
+plt.title("Simple Linear Regression")
+plt.show()
